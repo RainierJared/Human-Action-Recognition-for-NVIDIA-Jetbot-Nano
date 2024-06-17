@@ -1,9 +1,10 @@
-from ultralytics import YOLO 
+from ultralytics import YOLO
 
 #Loading pretrained model
-model = YOLO('./model/yolov8n-pose.pt')
+model = YOLO('./open_pose_project/Industrial_Project_HAR_for_Jetson_Nano/model/yolov8n-pose.pt')
 
-sourceImg = './test_image/image.jpg'
+model.export(format='ncnn')    #creates './yolov8n_ncnn_model'
 
-#Output
-results = model(sourceImg, show=True, conf=0.3, save=True)
+ncnn_model=YOLO('./open_pose_project/Industrial_Project_HAR_for_Jetson_Nano/model/yolov8n-pose_ncnn_model')
+
+results = ncnn_model(source=0, show=True, conf=0.3, save=True)

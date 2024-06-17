@@ -1,3 +1,6 @@
+#Can optimize this by only running if human is detected
+#Try out YOLOLight instead
+
 import cv2
 import numpy as np
 import tensorflow as tf
