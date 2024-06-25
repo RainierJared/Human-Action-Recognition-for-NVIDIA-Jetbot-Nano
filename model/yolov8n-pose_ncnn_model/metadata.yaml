@@ -1,6 +1,6 @@
 description: Ultralytics YOLOv8n-pose model trained on /usr/src/app/ultralytics/datasets/coco-pose.yaml
 author: Ultralytics
-date: '2024-06-25T11:55:54.661875'
+date: '2024-06-25T14:11:46.453329'
 version: 8.2.34
 license: AGPL-3.0 License (https://ultralytics.com/license)
 docs: https://docs.ultralytics.com

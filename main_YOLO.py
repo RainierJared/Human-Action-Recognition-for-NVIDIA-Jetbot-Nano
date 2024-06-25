@@ -11,9 +11,10 @@ model.export(format='ncnn')    #creates './yolov8n_ncnn_model'
 
 ncnn_model=YOLO('./open_pose_project/Industrial_Project_HAR_for_Jetson_Nano/model/yolov8n-pose_ncnn_model')
 
-camera = cv2.VideoCapture(0)
+#camera = cv2.VideoCapture("./open_pose_project/Industrial_Project_HAR_for_Jetson_Nano/test_video/walking.mp4")     #For videos when training the classifier
+camera = cv2.VideoCapture(0)        #For live feed
 
-if not camera.isOpened():
+if (camera.isOpened() == False):
     print("Error opening camera")
     sys.exit()
     
