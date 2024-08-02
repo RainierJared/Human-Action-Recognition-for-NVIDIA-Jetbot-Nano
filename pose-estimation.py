@@ -8,7 +8,7 @@ mpDraw = mp.solutions.drawing_utils
 mpPose = mp.solutions.pose
 pose = mpPose.Pose()
 
-fileName = 'open_pose_project/Industrial_Project_HAR_for_Jetson_Nano/test_video/walking.mp4'
+fileName = './test_video/walking.mp4'
 cap = cv2.VideoCapture(fileName)
 #cap = cv2.VideoCapture(0)
 cap.set(3,640)
@@ -58,7 +58,7 @@ while True:
     if cv2.waitKey(10) & 0xFF==ord('q'):
             break
         
-    f = open('open_pose_project/Industrial_Project_HAR_for_Jetson_Nano/data/data.pickle', 'wb')
+    f = open('./data/data.pickle', 'wb')
     pickle.dump({'actionData': actionData, 'actionName': actionName},f)
     f.close()      
 
