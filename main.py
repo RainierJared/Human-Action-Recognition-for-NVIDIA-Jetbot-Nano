@@ -4,22 +4,31 @@ import numpy as np
 import time
 import pickle
 
-fileName = './test_video/sitting-test.mp4'
+fileName = './test-videos/sitting-test.mp4'
 cap = cv2.VideoCapture(fileName)
+cap.set(3,640)
+cap.set(4,480)
 
 mpDraw = mp.solutions.drawing_utils
 mpPose = mp.solutions.pose
 pose = mpPose.Pose()
 
-labelsDict = {'walking': 'walk', 'sitting': 'sitting'}
+labelsDict = {0: 'sitting', 1: 'walking', 2: 'standing'}
 
 model_dict = pickle.load(open('./model/model.p', 'rb'))
 model = model_dict['model']
 
 pTime = 0
 
+width = int(cap.get(3))
+height = int(cap.get(4))
+size = (width, height)
+
+result = cv2.VideoWriter('./out-video/result.avi', cv2.VideoWriter_fourcc(*'MJPG'), 10, size, True)
+
 while True:
     success, img = cap.read()
+    
     rgbImg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     
     temp = []
@@ -47,14 +56,15 @@ while True:
                 
         mpDraw.draw_landmarks(img, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
         prediction = model.predict([np.asarray(temp)])
-        predictiedAction = labelsDict[prediction[0]]
+        predictiedAction = labelsDict[int(prediction[0])]
         
         #print(predictiedAction)
         cv2.putText(img, predictiedAction, (20,80), cv2.FONT_HERSHEY_COMPLEX, 1, (255,0,0),3)
-        
+        result.write(img)
     cv2.imshow("Video Capture", img)
     if cv2.waitKey(10) & 0xFF==ord('q'):
             break
 
 cap.release()
+result.release()
 cv2.destroyAllWindows()
