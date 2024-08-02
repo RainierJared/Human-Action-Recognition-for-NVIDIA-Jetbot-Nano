@@ -1,38 +1,34 @@
 import cv2
 import mediapipe as mp
+import numpy as np
 import time
-import os
 import pickle
+
+fileName = './test_video/sitting-test.mp4'
+cap = cv2.VideoCapture(fileName)
 
 mpDraw = mp.solutions.drawing_utils
 mpPose = mp.solutions.pose
 pose = mpPose.Pose()
 
-fileName = './test_video/walking.mp4'
-cap = cv2.VideoCapture(fileName)
+labelsDict = {'walking': 'walk', 'sitting': 'sitting'}
 
-cap.set(3,640)
-cap.set(4,480)
+model_dict = pickle.load(open('./model/model.p', 'rb'))
+model = model_dict['model']
+
 pTime = 0
-
-actionData = []
-actionName = []
-
-
-def getFileName(name):
-    out = os.path.basename(name)
-    #print(os.path.splitext(out)[0])        #Checking output
-    return os.path.splitext(out)[0]
 
 while True:
     success, img = cap.read()
     rgbImg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    
     temp = []
+    
     #Printing FPS
     cTime = time.time()
     fps = 1/(cTime-pTime)
     pTime=cTime
-    cv2.putText(img, f'FPS: {int(fps)}', (40,50), cv2.FONT_HERSHEY_COMPLEX, 1, (0,255,0),3)
+    cv2.putText(img, f'FPS: {int(fps)}', (20,40), cv2.FONT_HERSHEY_COMPLEX, 1, (0,255,0),3)
     
     results = pose.process(rgbImg)
     #print(results.pose_landmarks)       #Prints the keypoints
@@ -48,20 +44,17 @@ while True:
                 y = kpt.y
                 temp.append(x)
                 temp.append(y)
-            
+                
         mpDraw.draw_landmarks(img, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
-
-        #Storing the data
-        actionData.append(temp)
-        actionName.append(getFileName(fileName))
+        prediction = model.predict([np.asarray(temp)])
+        predictiedAction = labelsDict[prediction[0]]
+        
+        #print(predictiedAction)
+        cv2.putText(img, predictiedAction, (20,80), cv2.FONT_HERSHEY_COMPLEX, 1, (255,0,0),3)
         
     cv2.imshow("Video Capture", img)
     if cv2.waitKey(10) & 0xFF==ord('q'):
             break
-        
-    f = open('./data/data.pickle', 'wb')
-    pickle.dump({'actionData': actionData, 'actionName': actionName},f)
-    f.close()      
 
 cap.release()
 cv2.destroyAllWindows()
