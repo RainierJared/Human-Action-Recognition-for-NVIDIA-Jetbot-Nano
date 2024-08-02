@@ -23,8 +23,7 @@ pTime = 0
 width = int(cap.get(3))
 height = int(cap.get(4))
 size = (width, height)
-
-result = cv2.VideoWriter('./out-video/result.avi', cv2.VideoWriter_fourcc(*'MJPG'), 10, size, True)
+#result = cv2.VideoWriter('./out-video/result.avi', cv2.VideoWriter_fourcc(*'MJPG'), 10, size, True)
 
 while True:
     success, img = cap.read()
