@@ -53,18 +53,16 @@ while True:
                 y = kpt.y
                 temp.append(x)
                 temp.append(y)
-                
         mpDraw.draw_landmarks(img, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
         prediction = model.predict([np.asarray(temp)])
         predictiedAction = labelsDict[int(prediction[0])]
-        
-        #print(predictiedAction)
+    
         cv2.putText(img, predictiedAction, (20,80), cv2.FONT_HERSHEY_COMPLEX, 1, (255,0,0),3)
-        result.write(img)
+        #result.write(img)
     cv2.imshow("Video Capture", img)
     if cv2.waitKey(10) & 0xFF==ord('q'):
             break
 
 cap.release()
-result.release()
+#result.release()
 cv2.destroyAllWindows()
