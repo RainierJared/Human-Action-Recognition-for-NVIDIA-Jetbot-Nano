@@ -13,9 +13,13 @@ cap = cv2.VideoCapture(fileName)
 cap.set(3,640)
 cap.set(4,480)
 
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 640)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
+
+
 actionData = []
 actionName = []
-
+temp = []
 
 def getFileName(name):
     out = os.path.basename(name)
@@ -25,7 +29,7 @@ def getFileName(name):
 while True:
     success, img = cap.read()
     rgbImg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    temp = []
+
 
     results = pose.process(rgbImg)
     #print(results.pose_landmarks)       #Prints the keypoints
@@ -37,8 +41,8 @@ while True:
             cx, cy = int(kpt.x*imgWidth), int(kpt.y*imgHeight)
             
             for i in range(len(results.pose_landmarks.landmark)):
-                x = kpt.x
-                y = kpt.y
+                x = kpt.x/int(cv2.CAP_PROP_FRAME_HEIGHT)
+                y = kpt.y/int(cv2.CAP_PROP_FRAME_WIDTH)
                 temp.append(x)
                 temp.append(y)
             

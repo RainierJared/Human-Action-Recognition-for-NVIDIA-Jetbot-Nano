@@ -13,11 +13,11 @@ actionName = []
 DATA_DIR = './videos'
 for dir_ in os.listdir(DATA_DIR):
     for path in os.listdir(os.path.join(DATA_DIR, dir_)):
-        temp = []
+
         cap = cv2.VideoCapture(os.path.join(DATA_DIR,dir_,path))
         cap.set(3,640)
         cap.set(4,480)
-
+        
         while True:
             success, img = cap.read()
             rgbImg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -33,14 +33,14 @@ for dir_ in os.listdir(DATA_DIR):
                     cx, cy = int(kpt.x*imgWidth), int(kpt.y*imgHeight)
                     
                     for i in range(len(results.pose_landmarks.landmark)):
-                        x = kpt.x
-                        y = kpt.y
+                        x = cx
+                        y = cy
                         temp.append(x)
                         temp.append(y)
                     
                 mpDraw.draw_landmarks(img, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
 
-                #Storing the data
+                #Storing the dataq
                 actionData.append(temp)
                 actionName.append(dir_)
                 
