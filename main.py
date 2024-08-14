@@ -6,6 +6,10 @@ import pickle
 
 fileName = './test-videos/sitting-test.mp4'
 cap = cv2.VideoCapture(fileName)
+
+#Specific to Jetson Nano
+#cap = cv2.VideoCapture("nvarguscamerasrc ! video/x-raw(memory:NVMM),format=NV12,width=640,height=480,framerate=30/1 ! nvvidconv ! video/x-raw,format=BGRx ! videoconvert ! video/x-raw,format=BGR ! appsink drop=1", cv2.CAP_GSTREAMER)
+
 cap.set(3,640)
 cap.set(4,480)
 
