@@ -5,6 +5,7 @@ import time
 import datetime
 import csv
 import pickle
+from nanoCamera import camera
 
 #The different actions recognised
 labelsDict = {0: 'sitting', 1: 'moving', 2: 'standing', 3: 'laying down'}
@@ -20,7 +21,7 @@ mpPose = mp.solutions.pose
 pose = mpPose.Pose()
 
 #Set the video capture and dimensions (0 for camera)
-cap = cv2.VideoCapture(fileName)
+cap = cv2.VideoCapture(camera(flip_method=0),cv2.CAP_GSTREAMER)     #For nano's camera
 cap.set(3,640)
 cap.set(4,480)
 
