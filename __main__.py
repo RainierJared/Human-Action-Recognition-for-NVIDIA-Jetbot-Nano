@@ -4,44 +4,52 @@ import numpy as np
 import time
 import pickle
 
+#The different actions recognised
+labelsDict = {0: 'sitting', 1: 'moving', 2: 'standing', 3: 'laying down'}
+
+#Directory for test video
 fileName = './test-videos/sitting-test.mp4'
-cap = cv2.VideoCapture(fileName)
 
-#Specific to Jetson Nano
-#cap = cv2.VideoCapture("nvarguscamerasrc ! video/x-raw(memory:NVMM),format=NV12,width=640,height=480,framerate=30/1 ! nvvidconv ! video/x-raw,format=BGRx ! videoconvert ! video/x-raw,format=BGR ! appsink drop=1", cv2.CAP_GSTREAMER)
-
-cap.set(3,640)
-cap.set(4,480)
-
+#Loading the models
+model_dict = pickle.load(open('./model/model.p', 'rb'))
+model = model_dict['model']
 mpDraw = mp.solutions.drawing_utils
 mpPose = mp.solutions.pose
 pose = mpPose.Pose()
 
-labelsDict = {0: 'sitting', 1: 'moving', 2: 'standing', 3: 'laying down'}
+#Set the video capture and dimensions (0 for camera)
+cap = cv2.VideoCapture(fileName)
+cap.set(3,640)
+cap.set(4,480)
 
-model_dict = pickle.load(open('./model/model.p', 'rb'))
-model = model_dict['model']
-
-pTime = 0
-
+#Gathering dimensions
 width = int(cap.get(3))
 height = int(cap.get(4))
 size = (width, height)
+
+#For FPS
+pTime=0
+
+#For recording
 #result = cv2.VideoWriter('./out-video/result.avi', cv2.VideoWriter_fourcc(*'MJPG'), 10, size, True)
 
-while True:
-    success, img = cap.read()
-    
-    rgbImg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    
-    temp = []
-    
-    #Printing FPS
+#Prints FPS
+def printFPS():
+    global pTime
     cTime = time.time()
     fps = 1/(cTime-pTime)
     pTime=cTime
-    cv2.putText(img, f'FPS: {int(fps)}', (20,40), cv2.FONT_HERSHEY_COMPLEX, 0.75, (0,255,0),2)
+    return int(fps)
+
+#The action recognition
+def actionRecognition():
+    rgbImg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    temp = []
     
+    #Printing FPS
+    cv2.putText(img, f'FPS: {printFPS()}', (20,40), cv2.FONT_HERSHEY_COMPLEX, 0.75, (0,255,0),2)
+    
+    #Gathers keypoints
     results = pose.process(rgbImg)
     #print(results.pose_landmarks)       #Prints the keypoints
     
@@ -56,16 +64,30 @@ while True:
                 temp.append(x)
                 temp.append(y)
             
-        #mpDraw.draw_landmarks(img, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
+        mpDraw.draw_landmarks(img, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
         prediction = model.predict([np.asarray(temp)])
         predictiedAction = labelsDict[int(prediction[0])]
     
         cv2.putText(img, predictiedAction, (20,70), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
         #result.write(img)
-    cv2.imshow("Video Capture", img)
-    if cv2.waitKey(10) & 0xFF==ord('q'):
-            break
 
+ 
+#Starts the file
+def start():
+    global img
+    while True:
+        success, img = cap.read()
+        if success:
+            actionRecognition()
+            cv2.imshow("Video Capture", img)     
+            if cv2.waitKey(4) & 0xFF==ord('q'):
+                break
+        else:
+            break  
+
+if __name__ == "__main__":
+    start()
+    
 cap.release()
 #result.release()
 cv2.destroyAllWindows()

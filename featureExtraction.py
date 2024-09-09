@@ -3,33 +3,21 @@ import mediapipe as mp
 import os
 import pickle
 
+#Loads the models
 mpDraw = mp.solutions.drawing_utils
 mpPose = mp.solutions.pose
 pose = mpPose.Pose()
 
-fileName = './test_video/walking.mp4'
-cap = cv2.VideoCapture(fileName)
-
-cap.set(3,640)
-cap.set(4,480)
-
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 640)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
-
-
+#For appending later
 actionData = []
 actionName = []
-temp = []
 
-def getFileName(name):
-    out = os.path.basename(name)
-    #print(os.path.splitext(out)[0])        #Checking output
-    return os.path.splitext(out)[0]
+#Directory of the training videos
+DATA_DIR = './videos'
 
-while True:
-    success, img = cap.read()
+def featureExtraction():
     rgbImg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
+    temp = []
 
     results = pose.process(rgbImg)
     #print(results.pose_landmarks)       #Prints the keypoints
@@ -41,24 +29,44 @@ while True:
             cx, cy = int(kpt.x*imgWidth), int(kpt.y*imgHeight)
             
             for i in range(len(results.pose_landmarks.landmark)):
-                x = kpt.x/int(cv2.CAP_PROP_FRAME_HEIGHT)
-                y = kpt.y/int(cv2.CAP_PROP_FRAME_WIDTH)
+                x = cx
+                y = cy
                 temp.append(x)
                 temp.append(y)
             
         mpDraw.draw_landmarks(img, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
 
-        #Storing the data
+        #Storing the dataq
         actionData.append(temp)
-        actionName.append(getFileName(fileName))
-        
-    cv2.imshow("Video Capture", img)
-    if cv2.waitKey(10) & 0xFF==ord('q'):
-            break
-        
-    f = open('./data/data.pickle', 'wb')
-    pickle.dump({'actionData': actionData, 'actionName': actionName},f)
-    f.close()      
+        actionName.append(dir_)
 
+def beginLoop():
+    global img
+    while True:
+        success, img = cap.read()
+        if success:
+            featureExtraction()
+            cv2.imshow("Video Capture", img)
+            if cv2.waitKey(4) & 0xFF==ord('q'):
+                break
+        else:
+            break  
+       
+def start():
+    global dir_
+    for dir_ in os.listdir(DATA_DIR):
+        for path in os.listdir(os.path.join(DATA_DIR, dir_)):
+            global cap
+            cap = cv2.VideoCapture(os.path.join(DATA_DIR,dir_,path))
+            cap.set(3,640)
+            cap.set(4,480)
+            
+        beginLoop()
+        
+        f = open('./data/data.pickle', 'wb')
+        pickle.dump({'actionData': actionData, 'actionName': actionName},f)
+        f.close()    
+
+start()  
 cap.release()
 cv2.destroyAllWindows()
