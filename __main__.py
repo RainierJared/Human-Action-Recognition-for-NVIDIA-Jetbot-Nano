@@ -2,6 +2,8 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import time
+import datetime
+import csv
 import pickle
 
 #The different actions recognised
@@ -30,6 +32,7 @@ size = (width, height)
 #For FPS
 pTime=0
 
+
 #For recording
 #result = cv2.VideoWriter('./out-video/result.avi', cv2.VideoWriter_fourcc(*'MJPG'), 10, size, True)
 
@@ -54,6 +57,7 @@ def actionRecognition():
     #print(results.pose_landmarks)       #Prints the keypoints
     
     if results.pose_landmarks:
+
         for id, kpt in enumerate(results.pose_landmarks.landmark):       #Store the kpts in variables
             #print(f'{id} ',results.pose_landmarks.landmark[1])     #Prints the ID and their kpts location
             imgHeight,imgWidth,conf = img.shape
@@ -63,14 +67,31 @@ def actionRecognition():
                 y = cy
                 temp.append(x)
                 temp.append(y)
-            
+        
+        #Prints landmarks
         mpDraw.draw_landmarks(img, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
+        
+        #Prints the prediction
         prediction = model.predict([np.asarray(temp)])
-        predictiedAction = labelsDict[int(prediction[0])]
-    
-        cv2.putText(img, predictiedAction, (20,70), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+        out = predictedAction(prediction)
+        logToCSV(out) 
+        cv2.putText(img, out, (20,70), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
         #result.write(img)
 
+def logToCSV(out):
+    rows = [
+        {'Date': dateAndTime(),
+         'Action': out}
+    ]
+    with open('./log/log.csv', 'a') as f:
+        writer = csv.writer(f)
+        writer.writerow(rows)
+        
+def predictedAction(prediction):
+    return labelsDict[int(prediction[0])]
+
+def dateAndTime():
+    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
  
 #Starts the file
 def start():
