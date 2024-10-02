@@ -18,10 +18,11 @@ model_dict = pickle.load(open('./model/model.p', 'rb'))
 model = model_dict['model']
 mpDraw = mp.solutions.drawing_utils
 mpPose = mp.solutions.pose
-pose = mpPose.Pose()
+pose = mpPose.Pose(model_complexity=0)
 
 #Set the video capture and dimensions (0 for camera)
-cap = cv2.VideoCapture(camera(flip_method=0),cv2.CAP_GSTREAMER)     #For nano's camera
+#cap = cv2.VideoCapture(camera(flip_method=0),cv2.CAP_GSTREAMER)     #For nano's camera
+cap=cv2.VideoCapture(fileName)
 cap.set(3,640)
 cap.set(4,480)
 
@@ -33,6 +34,9 @@ size = (width, height)
 #For FPS
 pTime=0
 
+#For log
+pOut="."
+cOut="."
 
 #For recording
 #result = cv2.VideoWriter('./out-video/result.avi', cv2.VideoWriter_fourcc(*'MJPG'), 10, size, True)
@@ -47,6 +51,7 @@ def printFPS():
 
 #The action recognition
 def actionRecognition():
+    global pOut, cOut
     rgbImg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     temp = []
     
@@ -74,10 +79,13 @@ def actionRecognition():
         
         #Prints the prediction
         prediction = model.predict([np.asarray(temp)])
-        out = predictedAction(prediction)
-        logToCSV(out) 
-        cv2.putText(img, out, (20,70), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+        cOut = predictedAction(prediction)
+        cv2.putText(img, cOut, (20,70), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
         #result.write(img)
+    if cOut != pOut:
+        logToCSV(cOut)
+            
+    pOut=cOut
 
 def logToCSV(out):
     rows = [
@@ -102,7 +110,7 @@ def start():
         if success:
             actionRecognition()
             cv2.imshow("Video Capture", img)     
-            if cv2.waitKey(4) & 0xFF==ord('q'):
+            if cv2.waitKey(1) & 0xFF==ord('q'):
                 break
         else:
             break  
