@@ -5,7 +5,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-fileName = './data/data.pickle'
+fileName = './data/test.pickle'
 dataDictionary=pickle.load(open(fileName, 'rb'))
 
 data = np.asarray(dataDictionary['actionData'])

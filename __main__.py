@@ -5,7 +5,6 @@ import time
 import datetime
 import csv
 import pickle
-from nanoCamera import camera
 
 #The different actions recognised
 labelsDict = {0: 'sitting', 1: 'moving', 2: 'standing', 3: 'laying down'}
@@ -37,7 +36,7 @@ pTime=0
 #For log
 pOut="."
 cOut="."
-
+confidence=["0000"]
 #For recording
 #result = cv2.VideoWriter('./out-video/result.avi', cv2.VideoWriter_fourcc(*'MJPG'), 10, size, True)
 
@@ -51,7 +50,7 @@ def printFPS():
 
 #The action recognition
 def actionRecognition():
-    global pOut, cOut
+    global pOut, cOut, confidence
     rgbImg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     temp = []
     
@@ -66,21 +65,23 @@ def actionRecognition():
 
         for id, kpt in enumerate(results.pose_landmarks.landmark):       #Store the kpts in variables
             #print(f'{id} ',results.pose_landmarks.landmark[1])     #Prints the ID and their kpts location
-            imgHeight,imgWidth,conf = img.shape
+            imgHeight,imgWidth,_ = img.shape
             cx, cy = int(kpt.x*imgWidth), int(kpt.y*imgHeight)
             for i in range(len(results.pose_landmarks.landmark)):
                 x = cx
                 y = cy
                 temp.append(x)
                 temp.append(y)
+            
         
         #Prints landmarks
         mpDraw.draw_landmarks(img, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
         
         #Prints the prediction
         prediction = model.predict([np.asarray(temp)])
+        confidence = model.predict_proba([np.asarray(temp)])        
         cOut = predictedAction(prediction)
-        cv2.putText(img, cOut, (20,70), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+        cv2.putText(img, cOut, (20,70), cv2.FONT_HERSHEY_COMPLEX, 0.75, (0,0,255),2)
         #result.write(img)
     if cOut != pOut:
         logToCSV(cOut)
@@ -104,16 +105,21 @@ def dateAndTime():
  
 #Starts the file
 def start():
-    global img
+    global img, confidence
     while True:
         success, img = cap.read()
         if success:
             actionRecognition()
-            cv2.imshow("Video Capture", img)     
-            if cv2.waitKey(1) & 0xFF==ord('q'):
-                break
+            cv2.putText(img, f'Sitting: {confidence[0][0]}', (20,100), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            cv2.putText(img, f'Moving: {confidence[0][1]}', (20,130), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            cv2.putText(img, f'Standing: {confidence[0][2]}', (20,160), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            cv2.putText(img, f'Laying Down: {confidence[0][3]}', (20,190), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            cv2.imshow("Video Capture", img)   
         else:
             break  
+        
+        if cv2.waitKey(10) & 0xFF==ord('q'):
+            break
 
 if __name__ == "__main__":
     start()

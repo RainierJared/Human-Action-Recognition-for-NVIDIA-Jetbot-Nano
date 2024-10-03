@@ -47,10 +47,11 @@ def beginLoop():
         if success:
             featureExtraction()
             cv2.imshow("Video Capture", img)
-            if cv2.waitKey(4) & 0xFF==ord('q'):
-                break
         else:
             break  
+        
+        if cv2.waitKey(1) & 0xFF==ord('q'):
+                break    
        
 def start():
     global dir_
@@ -63,7 +64,7 @@ def start():
             
         beginLoop()
         
-        f = open('./data/data.pickle', 'wb')
+        f = open('./data/test.pickle', 'wb')
         pickle.dump({'actionData': actionData, 'actionName': actionName},f)
         f.close()    
 
