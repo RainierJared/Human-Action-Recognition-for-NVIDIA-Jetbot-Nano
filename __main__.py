@@ -3,7 +3,6 @@ import mediapipe as mp
 import numpy as np
 import time
 import datetime
-import csv
 import pickle
 
 #The different actions recognised
@@ -89,13 +88,10 @@ def actionRecognition():
     pOut=cOut
 
 def logToCSV(out):
-    rows = [
-        {'Date': dateAndTime(),
-         'Action': out}
-    ]
-    with open('./log/log.csv', 'a') as f:
-        writer = csv.writer(f)
-        writer.writerow(rows)
+    rows = 'Date: ' + dateAndTime() +', Action: ' + out
+    t = open("./log/log.csv", "a")
+    t.write(rows + "\n")
+    t.close()
         
 def predictedAction(prediction):
     return labelsDict[int(prediction[0])]

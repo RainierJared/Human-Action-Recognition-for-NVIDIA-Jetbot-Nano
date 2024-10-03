@@ -1,0 +1,6 @@
+"{'Date': '2024-10-03 22:39:34', 'Action': 'moving'}"
+\,n
+"{'Date': '2024-10-03 22:39:35', 'Action': 'sitting'}"
+\,n
+Date,Action
+Date,Action
