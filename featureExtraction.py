@@ -62,9 +62,9 @@ def start():
             cap.set(3,640)
             cap.set(4,480)
             
-        beginLoop()
+            beginLoop()
         
-        f = open('./data/test.pickle', 'wb')
+        f = open('./data/KTH.pickle', 'wb')
         pickle.dump({'actionData': actionData, 'actionName': actionName},f)
         f.close()    
 

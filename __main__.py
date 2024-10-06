@@ -6,17 +6,17 @@ import datetime
 import pickle
 
 #The different actions recognised
-labelsDict = {0: 'sitting', 1: 'moving', 2: 'standing', 3: 'laying down'}
+labelsDict = {0: 'walking', 1: 'running', 2: 'jogging', 3: 'hand waving', 4: 'hand clapping', 5: 'boxing'}
 
 #Directory for test video
-fileName = './test-videos/sitting-test.mp4'
+fileName = './test-videos/boxing.mp4'
 
 #Loading the models
-model_dict = pickle.load(open('./model/model.p', 'rb'))
+model_dict = pickle.load(open('./model/KTHmodel.p', 'rb'))
 model = model_dict['model']
 mpDraw = mp.solutions.drawing_utils
 mpPose = mp.solutions.pose
-pose = mpPose.Pose(model_complexity=0)
+pose = mpPose.Pose(model_complexity=1)
 
 #Set the video capture and dimensions (0 for camera)
 #cap = cv2.VideoCapture(camera(flip_method=0),cv2.CAP_GSTREAMER)     #For nano's camera
@@ -106,10 +106,13 @@ def start():
         success, img = cap.read()
         if success:
             actionRecognition()
-            cv2.putText(img, f'Sitting: {confidence[0][0]}', (20,100), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
-            cv2.putText(img, f'Moving: {confidence[0][1]}', (20,130), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
-            cv2.putText(img, f'Standing: {confidence[0][2]}', (20,160), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
-            cv2.putText(img, f'Laying Down: {confidence[0][3]}', (20,190), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            cv2.putText(img, f'{labelsDict[0]}: {confidence[0][0]}', (20,100), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            cv2.putText(img, f'{labelsDict[1]}: {confidence[0][1]}', (20,130), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            cv2.putText(img, f'{labelsDict[2]}: {confidence[0][2]}', (20,160), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            cv2.putText(img, f'{labelsDict[3]}: {confidence[0][3]}', (20,190), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            cv2.putText(img, f'{labelsDict[4]}: {confidence[0][3]}', (20,220), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            cv2.putText(img, f'{labelsDict[5]}: {confidence[0][3]}', (20,250), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            
             cv2.imshow("Video Capture", img)   
         else:
             break  
