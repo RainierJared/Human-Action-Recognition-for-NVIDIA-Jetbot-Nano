@@ -9,7 +9,7 @@ import pickle
 labelsDict = {0: 'walking', 1: 'running', 2: 'jogging', 3: 'hand waving', 4: 'hand clapping', 5: 'boxing'}
 
 #Directory for test video
-fileName = './test-videos/boxing.mp4'
+fileName = './test-videos/walking-test.mp4'
 
 #Loading the models
 model_dict = pickle.load(open('./model/KTHmodel.p', 'rb'))

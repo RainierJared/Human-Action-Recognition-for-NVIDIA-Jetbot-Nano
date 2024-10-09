@@ -24,3 +24,5 @@ print('{}% of samples were classified correctly'.format(score*100))
 f = open('./model/KTHmodel.p', 'wb')
 pickle.dump({'model': model}, f)
 f.close()
+
+# 94.98% accuracy; 6:55 s to build
