@@ -6,13 +6,13 @@ import datetime
 import pickle
 
 #The different actions recognised
-labelsDict = {0: 'sitting', 1: 'moving', 2: 'standing', 3: 'laying down'}
+labelsDict = {0: 'sitting', 1: 'walking', 2: 'running', 3: 'standing'}
 
 #Directory for test video
-fileName = './test-videos/sitting-test.mp4'
+fileName = './test-videos/parkour.mp4'
 
 #Loading the models
-model_dict = pickle.load(open('./model/model.p', 'rb'))
+model_dict = pickle.load(open('./model/Feiyu-model.p', 'rb'))
 model = model_dict['model']
 mpDraw = mp.solutions.drawing_utils
 mpPose = mp.solutions.pose
@@ -107,9 +107,9 @@ def start():
         if success:
             actionRecognition()
             cv2.putText(img, f'Sitting: {confidence[0][0]}', (20,100), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
-            cv2.putText(img, f'Moving: {confidence[0][1]}', (20,130), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
-            cv2.putText(img, f'Standing: {confidence[0][2]}', (20,160), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
-            cv2.putText(img, f'Laying Down: {confidence[0][3]}', (20,190), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            cv2.putText(img, f'Walking: {confidence[0][1]}', (20,130), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            cv2.putText(img, f'Running: {confidence[0][2]}', (20,160), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
+            cv2.putText(img, f'Standing: {confidence[0][3]}', (20,190), cv2.FONT_HERSHEY_COMPLEX, 0.75, (255,0,0),2)
             cv2.imshow("Video Capture", img)   
         else:
             break  
