@@ -1,7 +1,7 @@
 # Human Action Recognition for NVIDIA Jetbot Nano
 This is my final-year industrial project for Auckland University of Technology's, Bachelor of Engineering (Honours) - Software Engineering course. This project is supervised by Sira Yongchareon.
 
-It is a Python-based action classifier that utilizes any RGB camera, 'Mediapipe Pose' to estimate and extract a person's skeletal data, and 'Scikit-learn' to train the Random Forest classifier. 
+It is a Python-based action classifier that utilizes any RGB camera, `Mediapipe Pose` to estimate and extract a person's skeletal data, and `Scikit-learn` to train the Random Forest classifier. 
 
 ## Demo
 <p align="center">
@@ -10,9 +10,9 @@ It is a Python-based action classifier that utilizes any RGB camera, 'Mediapipe 
 
 ## Installation and how to run
 
-While this project was strictly developed under Python v3.6.9 due to the NVIDIA JetBot's restriction, I've only recently made the 'requirements.txt' file, so the versions of the dependencies will adhere to modern systems.
+While this project was strictly developed under Python v3.6.9 due to the NVIDIA JetBot's restriction, I've only recently made the `requirements.txt` file, so the versions of the dependencies will adhere to modern systems.
 
-Install the dependencies via 'requirements.txt'
+Install the dependencies via `requirements.txt`
 ```bash
 pip3 install -r requirements.txt
 ```
@@ -25,25 +25,25 @@ python3 __main__.py
 ## Training a new classifier
 If you would like to train your own classifier:
 
-Firstly, add the video that you'd like to use to extract the skeletal data from, and ensure that you follow the same format in the 'videos' folder. Then, in 'main.py', adjust the unordered collection labelled 'labelsDict' to the name of your action.
+Firstly, add the video that you'd like to use to extract the skeletal data from, and ensure that you follow the same format in the `videos` folder. Then, in `main.py`, adjust the unordered collection labelled `labelsDict` to the name of your action.
 
-If you'd like to add more actions, then make a new folder in 'videos' named '4' and add in your video in '.mp4' format.
+If you'd like to add more actions, then make a new folder in `videos` named `4` and add in your video in `.mp4` format.
 
-Then, run 'featureExtraction.py'
+Then, run `featureExtraction.py`
 ```bash
 python3 featureExtraction.py
 ```
 
-Once this is done, the data will then be saved to 'test.pickle' under './data/test.pickle'.
+Once this is done, the data will then be saved to `test.pickle` under `./data/test.pickle`.
 
-Secondly, execute 'training.py'
+Secondly, execute `training.py`
 ```bash
 python3 training.py
 ```
 
-Once finished, 'model.p' will be generated under './model/model.p', and will be used in '__main__.py' for the classifier
+Once finished, `model.p` will be generated under `./model/model.p`, and will be used in `__main__.py` for the classifier
 
-Lastly, run '__main__.py'
+Lastly, run `__main__.py`
 ```bash
 python3 __main__.py
 ```
