@@ -3,6 +3,11 @@ This is my final-year industrial project for Auckland University of Technology's
 
 It is a Python-based action classifier that utilizes any RGB camera, 'Mediapipe Pose' to estimate and extract a person's skeletal data, and 'Scikit-learn' to train the Random Forest classifier. 
 
+## Demo
+<p align="center">
+  <img src="HAR-demo.gif" alt="animated demo"/>
+</p>
+
 ## Installation and how to run
 
 While this project was strictly developed under Python v3.6.9 due to the NVIDIA JetBot's restriction, I've only recently made the 'requirements.txt' file, so the versions of the dependencies will adhere to modern systems.
